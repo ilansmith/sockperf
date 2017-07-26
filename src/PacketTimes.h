@@ -65,7 +65,14 @@ public:
 		setRxTime(_seqNo, TicksTime().setNow(), _serverNo);
 	}
 	void setRxTime(uint64_t _seqNo, const TicksTime &_time, uint64_t _serverNo = 0) {
-		TicksTime *rxTimes = &m_pInternalUse[seq2index(_seqNo)];
+		uint64_t idx = seq2index(_seqNo);
+		TicksTime *rxTimes = &m_pInternalUse[idx];
+#if 0
+		TicksTime *rxTimesPrev = &m_pInternalUse[idx - 2];
+		//printf("XXX idx:%lu\n", idx);
+		if (1 < idx && rxTimesPrev[_serverNo] == TicksTime::TICKS0)
+			printf("XXX dropped packets: _seqNo:%lu (idx:%lu)\n", _seqNo, idx);
+#endif
 		if (rxTimes[_serverNo] == TicksTime::TICKS0)
 		{
 			rxTimes[_serverNo] = _time;
